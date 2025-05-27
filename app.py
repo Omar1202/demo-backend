@@ -5,9 +5,9 @@ from pymongo.server_api import ServerApi
 from bson import ObjectId
 import os, requests
 
-#from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-#load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -110,7 +110,7 @@ def analizar_diagnostico():
             f"Instrucción: Genera un diagnóstico consultivo de TI para una empresa del sector {doc.get('sector', 'desconocido')}.\n"
             f"Contexto: Su mayor dolor de cabeza es: {doc.get('painPoint', 'No especificado')}.\n"
             "Objetivo: Proporciona una recomendación concreta de consultoría especializada en Data & AI."
-            "Formato: Retorna tu respuesta en un formato markdown"
+            "Formato: Retorna tu respuesta en un formato markdown."
         )
         token = obtener_token_ibm(WATSONX_API_KEY)
         # Headers Watsonx
@@ -121,13 +121,13 @@ def analizar_diagnostico():
 
         # Payload Watsonx
         payload = {
-            "model_id": "ibm/granite-3-8b-instruct",
+            "model_id": "mistralai/mistral-large",
             "input": prompt,
             "parameters": {
-                "decoding_method": "sample",
+                "decoding_method": "greedy",
                 "temperature": 0.7,
                 "repetition_penalty": 1.1,
-                "max_new_tokens": 500
+                "max_new_tokens": 1000
             },
             "project_id": WATSONX_PROJECT_ID
         }
@@ -139,7 +139,7 @@ def analizar_diagnostico():
             return jsonify({"error": "Error al consultar Watsonx.ai", "details": result}), 500
 
         generated_text = result.get("results", [{}])[0].get("generated_text", "")
-        print("Raw response:", result)
+        # print("Raw response:", result)
 
         # Actualizar documento
         collection.update_one(
