@@ -5,9 +5,9 @@ from pymongo.server_api import ServerApi
 from bson import ObjectId
 import os, requests
 
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-load_dotenv()
+#load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -110,6 +110,7 @@ def analizar_diagnostico():
             f"Instrucción: Genera un diagnóstico consultivo de TI para una empresa del sector {doc.get('sector', 'desconocido')}.\n"
             f"Contexto: Su mayor dolor de cabeza es: {doc.get('painPoint', 'No especificado')}.\n"
             "Objetivo: Proporciona una recomendación concreta de consultoría especializada en Data & AI."
+            "Formato: Retorna tu respuesta en un formato markdown"
         )
         token = obtener_token_ibm(WATSONX_API_KEY)
         # Headers Watsonx
