@@ -127,7 +127,7 @@ def analizar_diagnostico():
                 "decoding_method": "greedy",
                 "temperature": 0.7,
                 "repetition_penalty": 1.1,
-                "max_new_tokens": 1000
+                "max_new_tokens": 1200
             },
             "project_id": WATSONX_PROJECT_ID
         }
