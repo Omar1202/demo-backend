@@ -7,6 +7,7 @@ WORKDIR /app
 # Copiar archivos
 COPY requirements.txt requirements.txt
 COPY app.py app.py
+COPY fraud_detection_complete.csv fraud_detection_complete.csv
 
 # Instalar dependencias
 RUN pip install --upgrade pip && \
