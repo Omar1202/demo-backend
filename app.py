@@ -187,7 +187,7 @@ def model_dummy_predict():
     try:
         mltoken = obtener_token_ibm(WATSONX_API_KEY)
         
-        df = pd.read_csv("./fraud_detection_complete.csv")
+        df = pd.read_csv("app/fraud_detection_complete.csv")
         summary = {}
         for column in df.columns:
             summary[column] = {
