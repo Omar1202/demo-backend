@@ -186,8 +186,8 @@ def analizar_diagnostico():
 def model_dummy_predict():
     try:
         mltoken = obtener_token_ibm(WATSONX_API_KEY)
-        
-        df = pd.read_csv("app/fraud_detection_complete.csv")
+        current_dir = os.getcwd()
+        df = pd.read_csv(os.path.join(current_dir, "fraud_detection_complete.csv"))
         summary = {}
         for column in df.columns:
             summary[column] = {
