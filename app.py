@@ -211,8 +211,8 @@ def model_predict(id):
         df = pd.read_csv(os.path.join(current_dir, "data_predicted.csv"), delimiter="|")
         actual_record = df.loc[df["id"] == int(id)]
         return jsonify({
-            "prediction": int(actual_record.at[0, 'isFraud']),
-            "confidence": float(round(actual_record.at[0, 'confidence_level']*100, 2)),
+            "prediction": int(actual_record.iloc[0]['isFraud']),
+            "confidence": float(round(actual_record.iloc[0]['confidence_level']*100, 2)),
             }), 200
     
     except Exception as e:
