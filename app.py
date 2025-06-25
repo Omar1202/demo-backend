@@ -226,7 +226,7 @@ def model_analyze(id):
         df = pd.read_csv(os.path.join(current_dir, "data_predicted.csv"), delimiter="|")
         data = df.iloc[int(id)].iloc[1:]
         pred = data["isFraud"]
-        conf = data["confidence_level"]
+        conf = data["confidence_level"]*100
         data_usada = df.iloc[int(id)].iloc[1:-3]
         if(pred == 1):
             prompt = f"""# INSTRUCCIONES DEL SISTEMA
