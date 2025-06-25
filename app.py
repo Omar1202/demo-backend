@@ -224,10 +224,10 @@ def model_analyze(id):
         if(int(id) > 57): return jsonify({"error": "Error interno", "details": "No existe ese caso"}), 404
         current_dir = os.getcwd()
         df = pd.read_csv(os.path.join(current_dir, "data_predicted.csv"), delimiter="|")
-        data = df.iloc[int(id)].iloc[1:]
-        pred = data["isFraud"]
-        conf = data["confidence_level"]*100
-        data_usada = df.iloc[int(id)].iloc[1:-3]
+        data = df.loc[df["id"] == int(id)]
+        pred = data.iloc[0]["isFraud"]
+        conf = data.iloc[0]["confidence_level"]*100
+        data_usada = data.iloc[1:-3]
         if(pred == 1):
             prompt = f"""# INSTRUCCIONES DEL SISTEMA
                 Eres un analista senior de riesgos y fraudes en seguros con 15+ años de experiencia. Tu especialidad es interpretar modelos de ML y generar insights accionables para equipos de negocio.
@@ -331,6 +331,7 @@ def model_analyze(id):
             "analisis_modelo": generated_text["message"]
             }), 200
 
+        # return jsonify({"result": "result"})
     except Exception as e:
         return jsonify({"error": "Error interno", "details": str(e)}), 500
 
