@@ -190,15 +190,18 @@ def analizar_diagnostico():
             "Formato: Retorna tu respuesta en un formato markdown."
         )
         
-        generated_text = call_to_watsonx_api(prompt)
+        watsonxai_answer = call_to_watsonx_api(prompt)
+
+        if(watsonxai_answer["result"] == False):
+            return jsonify({"error": watsonxai_answer["message"]}), 500
 
         # Actualizar documento
         collection.update_one(
             {"_id": ObjectId(doc_id)},
-            {"$set": {"diagnostico": generated_text}}
+            {"$set": {"diagnostico": watsonxai_answer["message"]}}
         )
 
-        return jsonify({"diagnostico": generated_text}), 200
+        return jsonify({"diagnostico": watsonxai_answer["message"]}), 200
 
     except Exception as e:
         return jsonify({"error": "Error interno", "details": str(e)}), 500
