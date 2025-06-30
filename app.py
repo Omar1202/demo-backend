@@ -54,7 +54,6 @@ descripcion_variables = """
     PolicyType: Tipo de póliza contratada.
     VehicleCategory: Categoría del vehículo (sedán, SUV, etc.).
     VehiclePrice: Precio del vehículo.
-    FraudFound_P: Indica si se detectó fraude en el reclamo.
     PolicyNumber: Identificador único de la póliza.
     RepNumber: Identificador del representante de seguros.
     Deductible: Monto deducible que paga el asegurado antes del seguro.
@@ -108,7 +107,7 @@ def call_to_watsonx_api(prompt):
         "parameters": {
             "decoding_method": "greedy",
             "repetition_penalty": 1.1,
-            "max_new_tokens": 2000,
+            "max_new_tokens": 2100,
             "min_new_tokens": 1000
         },
         "project_id": WATSONX_PROJECT_ID
@@ -360,7 +359,6 @@ def model_dummy_predict():
             ### 1. **INDICADORES CLAVE DE RIESGO (KRIs)**
             - Identifica las TOP 5 variables más predictivas de fraude con su poder discriminatorio
             - Calcula umbrales críticos para alertas tempranas
-            - Cuantifica el impacto financiero potencial por variable
 
             ### 2. **SEGMENTACIÓN ESTRATÉGICA DE RIESGO**
             - **Perfil Alto Riesgo**: Características y prevalencia (% de cartera)
