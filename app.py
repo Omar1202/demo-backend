@@ -151,8 +151,7 @@ def insertar_diagnostico():
 @app.route("/diagnosticos", methods=["GET"])
 def obtener_diagnosticos():
     try:
-        documentos = list(collection.find())
-        result = [{**doc, "_id": str(doc["_id"])} for doc in collection.find()]
+        result = [{**doc, "_id": str(doc["_id"])} for doc in collection.find() if "type" not in doc]
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
