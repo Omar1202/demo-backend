@@ -39,39 +39,39 @@ db = client["watsonxDemoDB"]
 collection = db["diagnosticos"]
 
 descripcion_variables = """
-Month: Mes en que se presentó el siniestro.
-WeekOfMonth: Semana del mes en que ocurrió el siniestro.
-DayOfWeek: Día de la semana en que ocurrió el siniestro.
-Make: Fabricante del vehículo involucrado.
-AccidentArea: Zona donde ocurrió el accidente (urbana o rural).
-DayOfWeekClaimed: Día de la semana en que se procesó el reclamo.
-MonthClaimed: Mes en que se procesó el reclamo.
-WeekOfMonthClaimed: Semana del mes en que se procesó el reclamo.
-Sex: Género del asegurado.
-MaritalStatus: Estado civil del asegurado.
-Age: Edad del asegurado.
-Fault: Indica si el asegurado fue responsable del accidente.
-PolicyType: Tipo de póliza contratada.
-VehicleCategory: Categoría del vehículo (sedán, SUV, etc.).
-VehiclePrice: Precio del vehículo.
-FraudFound_P: Indica si se detectó fraude en el reclamo.
-PolicyNumber: Identificador único de la póliza.
-RepNumber: Identificador del representante de seguros.
-Deductible: Monto deducible que paga el asegurado antes del seguro.
-DriverRating: Calificación del conductor basada en su historial.
-Days_Policy_Accident: Días entre la emisión de la póliza y el accidente.
-Days_Policy_Claim: Días entre la emisión de la póliza y el reclamo.
-PastNumberOfClaims: Número de reclamos previos del asegurado.
-AgeOfVehicle: Edad del vehículo involucrado.
-AgeOfPolicyHolder: Edad del asegurado.
-PoliceReportFiled: Si se presentó reporte policial del accidente.
-WitnessPresent: Si hubo testigos en el accidente.
-AgentType: Tipo de agente de seguros (interno o externo).
-NumberOfSuppliments: Número de documentos o reclamos adicionales.
-AddressChange_Claim: Si hubo cambio de domicilio al momento del reclamo.
-NumberOfCars: Número de vehículos asegurados bajo la póliza.
-Year: Año en que se realizó o procesó el reclamo.
-BasePolicy: Tipo base de la póliza (Responsabilidad Civil, Colisión, Todo Riesgo).
+    Month: Mes en que se presentó el siniestro.
+    WeekOfMonth: Semana del mes en que ocurrió el siniestro.
+    DayOfWeek: Día de la semana en que ocurrió el siniestro.
+    Make: Fabricante del vehículo involucrado.
+    AccidentArea: Zona donde ocurrió el accidente (urbana o rural).
+    DayOfWeekClaimed: Día de la semana en que se procesó el reclamo.
+    MonthClaimed: Mes en que se procesó el reclamo.
+    WeekOfMonthClaimed: Semana del mes en que se procesó el reclamo.
+    Sex: Género del asegurado.
+    MaritalStatus: Estado civil del asegurado.
+    Age: Edad del asegurado.
+    Fault: Indica si el asegurado fue responsable del accidente.
+    PolicyType: Tipo de póliza contratada.
+    VehicleCategory: Categoría del vehículo (sedán, SUV, etc.).
+    VehiclePrice: Precio del vehículo.
+    FraudFound_P: Indica si se detectó fraude en el reclamo.
+    PolicyNumber: Identificador único de la póliza.
+    RepNumber: Identificador del representante de seguros.
+    Deductible: Monto deducible que paga el asegurado antes del seguro.
+    DriverRating: Calificación del conductor basada en su historial.
+    Days_Policy_Accident: Días entre la emisión de la póliza y el accidente.
+    Days_Policy_Claim: Días entre la emisión de la póliza y el reclamo.
+    PastNumberOfClaims: Número de reclamos previos del asegurado.
+    AgeOfVehicle: Edad del vehículo involucrado.
+    AgeOfPolicyHolder: Edad del asegurado.
+    PoliceReportFiled: Si se presentó reporte policial del accidente.
+    WitnessPresent: Si hubo testigos en el accidente.
+    AgentType: Tipo de agente de seguros (interno o externo).
+    NumberOfSuppliments: Número de documentos o reclamos adicionales.
+    AddressChange_Claim: Si hubo cambio de domicilio al momento del reclamo.
+    NumberOfCars: Número de vehículos asegurados bajo la póliza.
+    Year: Año en que se realizó o procesó el reclamo.
+    BasePolicy: Tipo base de la póliza (Responsabilidad Civil, Colisión, Todo Riesgo).
 """
 
 
@@ -221,13 +221,13 @@ def model_predict(id):
 @app.route("/model-analyze/<id>", methods=["GET"])
 def model_analyze(id): 
     try:
-        if(int(id) > 57): return jsonify({"error": "Error interno", "details": "No existe ese caso"}), 404
+        if(int(id) > 58): return jsonify({"error": "Error interno", "details": "No existe ese caso"}), 404
         current_dir = os.getcwd()
         df = pd.read_csv(os.path.join(current_dir, "data_predicted.csv"), delimiter="|")
         data = df.loc[df["id"] == int(id)]
         pred = data.iloc[0]["isFraud"]
-        conf = data.iloc[0]["confidence_level"]*100
-        data_usada = data.iloc[1:-3]
+        conf = float(round( data.iloc[0]["confidence_level"]*100, 2 ))
+        data_usada = data.iloc[0][1:-3]
         if(pred == 1):
             prompt = f"""# INSTRUCCIONES DEL SISTEMA
                 Eres un analista senior de riesgos y fraudes en seguros con 15+ años de experiencia. Tu especialidad es interpretar modelos de ML y generar insights accionables para equipos de negocio.
@@ -235,15 +235,16 @@ def model_analyze(id):
                 ## CONTEXTO DEL ANÁLISIS
                 **Variables del modelo:** {descripcion_variables}
                 **Datos del caso:** {str(data_usada.to_dict())}
-                **resultado del analisis:** {"fraude" if pred == 1 else "no fraude"}
+                **resultado del analisis:** "fraude"
                 **porcentaje de probabilidad de fraude según el modelo:** {conf}
+                **La probabilidad ya está calculada correctamente, no necesitas multiplicarla por 100.**
 
                 ## ESTRUCTURA REQUERIDA DE RESPUESTA
                 Proporciona tu análisis en exactamente estas secciones usando formato Markdown:
 
                 ### 🔍 Resumen Ejecutivo
                 - Nivel de riesgo: [ALTO/MEDIO/BAJO]
-                - Probabilidad de fraude estimada
+                - Probabilidad de fraude estimada (usa el valor proporcionado)
                 - 2-3 puntos clave más críticos
 
                 ### 📊 Análisis de Patrones Críticos  
@@ -281,15 +282,16 @@ def model_analyze(id):
                 ## CONTEXTO DEL ANÁLISIS
                 **Variables del modelo:** {descripcion_variables}
                 **Datos del caso:** {str(data_usada.to_dict())}
-                **Resultado del análisis:** {"fraude" if pred == 0 else "no fraude"}
+                **Resultado del análisis:** "no fraude"
                 **Porcentaje de probabilidad de fraude según el modelo:** {conf}
+                **La probabilidad ya está calculada correctamente, no necesitas multiplicarla por 100.**
 
                 ## ESTRUCTURA REQUERIDA DE RESPUESTA
                 Proporciona tu análisis en exactamente estas secciones usando formato Markdown:
 
                 ### 🔍 Resumen Ejecutivo
                 - Nivel de riesgo: [MUY BAJO / BAJO / MODERADO]
-                - Probabilidad de fraude estimada
+                - Probabilidad de fraude estimada (usa el valor proporcionado)
                 - 2-3 factores protectores principales
 
                 ### 📊 Factores que Reducen el Riesgo  
@@ -364,7 +366,6 @@ def model_dummy_predict():
             - **Perfil Alto Riesgo**: Características y prevalencia (% de cartera)
             - **Perfil Medio Riesgo**: Factores de escalamiento
             - **Perfil Bajo Riesgo**: Benchmarks para comparación
-            - Incluye el valor económico estimado por segmento
 
             ### 3. **PATRONES OPERACIONALES CRÍTICOS**
             - **Timing Fraudulento**: Análisis de días entre póliza-accidente-reclamo
@@ -372,25 +373,15 @@ def model_dummy_predict():
             - **Correlaciones Geográficas y Temporales**: Zonas y períodos de mayor riesgo
             - **Perfiles de Agentes**: Identificación de comportamientos atípicos por tipo de agente
 
-            ### 4. **IMPACTO FINANCIERO Y ROI**
-            - Estimación de pérdidas evitables por mejor detección
-            - Costo-beneficio de implementar controles adicionales
-            - Priorización de acciones por impacto económico
-
-            ### 5. **PLAN DE ACCIÓN ESTRATÉGICO**
+            ### 4. **PLAN DE ACCIÓN ESTRATÉGICO**
             - **Inmediato (0-30 días)**: 3 acciones de implementación rápida
             - **Corto plazo (1-6 meses)**: Mejoras en procesos y sistemas
             - **Largo plazo (6+ meses)**: Transformación digital y capacitación
             - Incluye métricas de éxito y responsible owners
 
-            ### 6. **ALERTAS Y MONITOREO CONTINUO**
-            - Dashboard de indicadores clave para seguimiento diario
-            - Umbrales de alerta automática por perfil de riesgo
-            - Métricas de efectividad del modelo de detección
-
             ---
 
-            ## 📋 ESPECIFICACIONES DE ENTREGA
+            ## ESPECIFICACIONES DE ENTREGA
 
             **FORMATO:**
             - Respuesta en Markdown optimizado para dashboard web
