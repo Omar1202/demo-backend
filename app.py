@@ -25,7 +25,8 @@ uri = f"mongodb+srv://{username}:{password}@watsonxtest.6u16lup.mongodb.net/?ret
 
 WATSONX_API_KEY = os.environ.get("WATSONX_API_KEY")
 WATSONX_PROJECT_ID = os.environ.get("WATSONX_PROJECT_ID")
-FOUNDATION_MODEL = "mistralai/mistral-large"
+FOUNDATION_MODEL = "mistralai/mistral-small-3-1-24b-instruct-2503"
+# FOUNDATION_MODEL = "mistralai/mistral-large"
 # FOUNDATION_MODEL = "meta-llama/llama-3-3-70b-instruct"
 
 
